@@ -3,8 +3,8 @@ FROM alpine:latest as certs
 
 RUN apk --update add ca-certificates
 
-COPY promql_exporter /promql_exporter
+COPY . .
 
-ENTRYPOINT ["/promql_exporter"]
+ENTRYPOINT ["/cx-promql-exporter"]
 
-EXPOSE 9312
+EXPOSE 9517
