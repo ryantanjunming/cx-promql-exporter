@@ -1,8 +1,47 @@
 # PromQL Exporter
-> A Prometheus Exporter for Coralogix Metrics API
+> A Prometheus Exporter for PromQL
 
-This exporter fetches metrics from Coralogix's PromQL-compatible API endpoint and exposes them in Prometheus format.
-More Info Here: <https://coralogix.com/docs/user-guides/data-query/metrics-api/#promql-compatible-query-data-source>
+This exporter fetches metrics from PromQL-compatible API endpoint and exposes them in Prometheus format.
+
+Added functionality for querying Coralogix's Metric API which is used as a datasource for Grafana Plugin.
+
+More Info: 
+- <https://coralogix.com/docs/user-guides/data-query/metrics-api/#promql-compatible-query-data-source>
+- <https://coralogix.com/docs/user-guides/visualizations/grafana-plugin/>
+
+Inspired by: <https://github.com/samber/promql-exporter>
+
+## 🏗️ Build
+
+To build the Docker image locally:
+
+```sh
+# From the project root directory
+docker build -t promql-exporter .
+```
+
+The Dockerfile uses a multi-stage build process:
+1. First stage builds the Go binary using `golang:1.21-alpine`
+2. Final stage creates a minimal image using `alpine:3.19`
+
+The resulting image is optimized for size and security, with:
+- Minimal dependencies
+- CGO disabled for better compatibility
+- Non-root user execution
+- Port 9517 exposed for metrics
+
+To build the binary directly:
+
+```sh
+# Install dependencies
+go mod download
+
+# Build the binary
+go build -o promql_exporter
+
+# For production builds with optimizations
+CGO_ENABLED=0 GOOS=linux go build -o promql_exporter
+```
 
 ## 🚀 Run
 
@@ -12,17 +51,17 @@ Using Docker:
 docker run --rm -it \
   -p 9517:9517 \
   -e ENDPOINT=https://ng-api-http.coralogix.com \
-  -e CX_API_KEY=<your-api-key> \
-  -e METRICS="up,container_cpu_time_s_total" \
-  ryantanjunming/promql_exporter
+  -e CX_API_KEY=<cx-api-key> \
+  -e METRICS="<metrics-comma-separated>" \
+  your-container-repo/cx-promql-exporter
 ```
 
 Or using a binary:
 
 ```sh
 ./promql_exporter \
-  --endpoint https://ng-api-http.coralogixsg.com \
-  --cx-api-key your-api-key \
+  --endpoint https://ng-api-http.coralogix.com \
+  --cx-api-key <cx-api-key> \
   --metrics "up,container_cpu_time_s_total"
 ```
 
@@ -30,7 +69,7 @@ Or using a binary:
 
 ```sh
 ./promql_exporter
-usage: promql_exporter --endpoint=https://ng-api-http.coralogixsg.com [<flags>]
+usage: promql_exporter --endpoint=https://ng-api-http.coralogix.com [<flags>]
 
 Flags:
   -h, --help                           Show context-sensitive help
@@ -48,7 +87,7 @@ Flags:
 ## 🔧 Configuration
 
 ### Required Parameters
-- `--endpoint`: Coralogix API endpoint (e.g., https://ng-api-http.coralogixsg.com)
+- `--endpoint`: Coralogix API endpoint (e.g., https://ng-api-http.coralogix.com)
 - `--cx-api-key`: Coralogix API key for authentication
 
 ### Optional Parameters
@@ -63,13 +102,4 @@ Flags:
 Copyright © 2024 [Ryan Tan](https://github.com/ryantanjunming).
 
 This project is [MIT](./LICENSE) licensed.
-
-```bash
-# Install some dev dependencies
-make tools
-
-# Run tests
-make test
-# or
-make watch-test
 ```
