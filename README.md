@@ -2,6 +2,7 @@
 > A Prometheus Exporter for Coralogix Metrics API
 
 This exporter fetches metrics from Coralogix's PromQL-compatible API endpoint and exposes them in Prometheus format.
+More Info Here: <https://coralogix.com/docs/user-guides/data-query/metrics-api/#promql-compatible-query-data-source>
 
 ## 🚀 Run
 
