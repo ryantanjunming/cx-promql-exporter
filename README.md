@@ -38,9 +38,6 @@ go mod download
 
 # Build the binary
 go build -o promql_exporter
-
-# For production builds with optimizations
-CGO_ENABLED=0 GOOS=linux go build -o promql_exporter
 ```
 
 ## 🚀 Run
